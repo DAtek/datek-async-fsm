@@ -3,6 +3,7 @@ name = "datek-async-fsm"
 version = "0.1.0"
 description = "Asynchronous Finite State Machine"
 authors = ["Attila Dudas"]
+include = ["README.md"]
 license = "MIT"
 
 [tool.poetry.dependencies]
