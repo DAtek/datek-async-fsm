@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from enum import Enum
-from typing import Type, Optional
+from typing import Type
 
 
 class StateType(Enum):
@@ -24,5 +24,5 @@ class BaseState:
     @abstractmethod
     async def transit(
         self, states: StateCollection
-    ) -> Optional[Type["BaseState"]]:  # pragma: no cover
+    ) -> Type["BaseState"]:  # pragma: no cover
         pass
