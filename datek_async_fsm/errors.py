@@ -12,3 +12,7 @@ class MultipleInitialStatesProvidedError(FSMError):
 
 class EndStateNotProvidedError(FSMError):
     pass
+
+
+class NoNextStateError(FSMError):
+    pass

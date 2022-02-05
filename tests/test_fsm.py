@@ -7,6 +7,7 @@ from datek_async_fsm.errors import (
     InitialStateNotProvidedError,
     MultipleInitialStatesProvidedError,
     EndStateNotProvidedError,
+    NoNextStateError,
 )
 from tests.example import FSM, Start, S1, S2, S3, End, BaseState
 
@@ -16,7 +17,7 @@ class TestFSM:
     async def test_run(self):
         fsm = FSM(
             [Start, S1, S2, S3, End],
-            transitions=["4", "1", "3", "1", "3", "3", "2", "4"],
+            transitions=["1", "3", "1", "3", "2", "4"],
         )
 
         await fsm.run()
@@ -36,3 +37,13 @@ class TestFSM:
     ):
         with raises(error_type):
             FSM(states)
+
+    @mark.asyncio
+    async def test_run_raises_transition_error_if_next_state_is_not_specified(self):
+        fsm = FSM(
+            [Start, S1, S2, End],
+            transitions=["1", "2", "1", "4"],
+        )
+
+        with raises(NoNextStateError):
+            await fsm.run()

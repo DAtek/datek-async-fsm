@@ -5,6 +5,7 @@ from datek_async_fsm.errors import (
     InitialStateNotProvidedError,
     MultipleInitialStatesProvidedError,
     EndStateNotProvidedError,
+    NoNextStateError,
 )
 from datek_async_fsm.state import BaseState, StateCollection, StateType
 
@@ -30,8 +31,8 @@ class BaseFSM:
         input_generator: AsyncGenerator = self._input_generator()
         state_generator = self._state_generator()
         async for _ in state_generator:
-            kwargs = await input_generator.__anext__()
-            await state_generator.asend(kwargs)
+            input_ = await input_generator.__anext__()
+            await state_generator.asend(input_)
 
         await input_generator.aclose()
 
@@ -43,12 +44,10 @@ class BaseFSM:
             if not (
                 next_state_class := await current_state.transit(self._state_classes)
             ):
-                yield
-                continue
-
-            yield
+                raise NoNextStateError
 
             self._current_state_class = next_state_class
+            yield
 
     @abstractmethod
     async def _input_generator(self) -> AsyncGenerator[dict, None]:  # pragma: no cover
